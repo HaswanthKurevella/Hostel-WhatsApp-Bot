@@ -1,0 +1,2038 @@
+{
+  "name": "Hostel Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -1040
+      ],
+      "id": "2e9ed997-265e-4c22-ad50-db4e92cea1d8",
+      "name": "WhatsApp Trigger",
+      "webhookId": "2a89afad-dbb9-4916-8220-23534273d93a",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "70Q8mKW66LoswNqC",
+          "name": "WhatsApp OAuth account for hostel"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8",
+          "mode": "list",
+          "cachedResultName": "Hostellers Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Phone Number",
+              "lookupValue": "={{ $json.messages[0].from }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        60,
+        -1040
+      ],
+      "id": "82f6c8c1-18b2-4456-b4b1-bc5f19aa40d5",
+      "name": "Google Sheets",
+      "alwaysOutputData": true,
+      "notesInFlow": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "WHH2kfjowspGwaN5",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0a4243d9-cc0a-4667-af87-1fff7a933d4f",
+              "leftValue": "={{ $json.data.approved }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        -1140
+      ],
+      "id": "ab7ae92b-ad2d-40a3-a173-2008a5e28082",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "phoneNumberId": "652405314621678",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+        "message": "=Here are your outing details:\nFrom :{{ $json.data.From }}\nTo: {{ $json.data.to }}\nReason: {{ $json.data['Reason for outing'] }}\n\nParent Name:{{ $('Google Sheets').item.json['Parent Name'] }}\nParent mobile number:{{ $('Google Sheets').item.json['Parent Number'] }}\nHostel Name:{{ $('Google Sheets').item.json['Hostel Name'] }}\nWarden mobile number:{{ $('Google Sheets').item.json['Warden Number'] }}\n\nif you approve the details from the below the outing request will be submitted for the approval from both parents and the warden.\nThanks\nHostel Bot",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        -1215
+      ],
+      "id": "11cc003e-54d7-40f2-9413-fe3a3a9b2a3d",
+      "name": "Outing details confirmation",
+      "webhookId": "b68fcee0-0ca2-4963-84d1-5de52be776d3",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "I6p7Us8QOTve6Y0Q",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "phoneNumberId": "652405314621678",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "message": "=Hi  {{ $('Google Sheets').item.json['Student Name'] }},\nfill the form below to proceed the request of outing.\n",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "From",
+              "fieldType": "date",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "to",
+              "fieldType": "date",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Reason for outing",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        980,
+        -1140
+      ],
+      "id": "dc4bb7ac-9b26-45b5-aea3-0d7c86a8d507",
+      "name": "Outing details collection",
+      "webhookId": "c8f59136-0fba-46c3-b142-207404d597a9",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "I6p7Us8QOTve6Y0Q",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9ae875af-5d7e-4a75-9f36-c33fe92dcb6f",
+              "leftValue": "={{ $json.data.approved }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1380,
+        -1140
+      ],
+      "id": "fd015d5d-32cb-466f-884c-480f0157acd0",
+      "name": "Outing details are confirmed"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "phoneNumberId": "652405314621678",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "message": "=Hi {{ $json['Student Name'] }} ,\nplease click on the below button to proceed further.",
+        "approvalOptions": {
+          "values": {
+            "approveLabel": "Book an Appointment for Outing"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        500,
+        -1140
+      ],
+      "id": "be87f287-5e01-4956-a4b9-2478df400b49",
+      "name": "Outing Booking selection",
+      "webhookId": "4c398926-3a60-44d3-b407-0ce0b3fc5f13",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "I6p7Us8QOTve6Y0Q",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "phoneNumberId": "652405314621678",
+        "recipientPhoneNumber": "={{ $('Google Sheets').item.json['Parent Number'].toString() }}",
+        "message": "=hi  {{ $('Google Sheets').item.json['Parent Name'] }},\nwe are messaging to get approval for the outing request sent by your ward {{ $('Google Sheets').item.json['Student Name'] }}  residing at {{ $('Google Sheets').item.json['Hostel Name'] }}\nOuting From: {{ $('Outing details collection').item.json.data.From }}\nOuting upto: {{ $('Outing details collection').item.json.data.to }}\nReason:\nPlease click on the respective link below to proceed.",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        1820,
+        -1140
+      ],
+      "id": "48aced4d-eb81-4161-9e7f-ee99cdcb78d8",
+      "name": "parent approval",
+      "webhookId": "0d3e6c98-35f2-4211-a853-bad836980b09",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "I6p7Us8QOTve6Y0Q",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8",
+          "mode": "list",
+          "cachedResultName": "Hostellers Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1819228021,
+          "mode": "list",
+          "cachedResultName": "Requests",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit#gid=1819228021"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Google Sheets').item.json['Student Name'] }}",
+            "From": "={{ $('Outing details collection').item.json.data.From }}",
+            "To": "={{ $('Outing details collection').item.json.data.to }}",
+            "Reason": "={{ $('Outing details collection').item.json.data['Reason for outing'] }}",
+            "Approval status": "Submitted for approval",
+            "Student ID": "={{ $('Google Sheets').item.json['Student Id'] }}"
+          },
+          "matchingColumns": [
+            "Student ID"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "From",
+              "displayName": "From",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Reason",
+              "displayName": "Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Approval status",
+              "displayName": "Approval status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Student ID",
+              "displayName": "Student ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1600,
+        -1140
+      ],
+      "id": "ad55c52b-21b9-4538-8c18-3b200a09f2c5",
+      "name": "add approval request",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "WHH2kfjowspGwaN5",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8",
+          "mode": "list",
+          "cachedResultName": "Hostellers Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1819228021,
+          "mode": "list",
+          "cachedResultName": "Requests",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit#gid=1819228021"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Google Sheets').item.json['Student Name'] }}",
+            "Approval status": "Parent Approved",
+            "Student ID": "={{ $('Google Sheets').item.json['Student Id'] }}"
+          },
+          "matchingColumns": [
+            "Student ID"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "From",
+              "displayName": "From",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Reason",
+              "displayName": "Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Approval status",
+              "displayName": "Approval status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Student ID",
+              "displayName": "Student ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2260,
+        -1240
+      ],
+      "id": "683d97b2-0c3a-4520-a7dd-58fac73276ec",
+      "name": "Update Approval Request",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "WHH2kfjowspGwaN5",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ $('add approval request').item.json['Student ID'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3360,
+        -1340
+      ],
+      "id": "9b4e480c-45b5-4b40-a681-ec46d5a69374",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "652405314621678",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "messageType": "image",
+        "mediaPath": "useMediaId",
+        "mediaId": "={{ $('upload qr').item.json.id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        4020,
+        -1340
+      ],
+      "id": "f71ba4b0-ae86-44d5-83f1-881eee277d8e",
+      "name": "Send Qr",
+      "webhookId": "eaca0e55-a56a-4720-ac34-d3cd15f4cda1",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "I6p7Us8QOTve6Y0Q",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "2668bacf-2a9e-4577-9525-71be2184f15d",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        -580
+      ],
+      "id": "ba51d3fc-711f-43d3-aaf5-64764af19c08",
+      "name": "Webhook",
+      "webhookId": "2668bacf-2a9e-4577-9525-71be2184f15d"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "53067989-23e4-48d4-b259-9b5c662795f0",
+              "leftValue": "={{ $today }}",
+              "rightValue": "={{ $json.To }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "beforeOrEquals"
+              }
+            },
+            {
+              "id": "20e0626c-adb4-4a3e-b325-06b5b6b0b4b1",
+              "leftValue": "={{ $today }}",
+              "rightValue": "={{ $json.From }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "afterOrEquals"
+              }
+            },
+            {
+              "id": "939a6544-89a1-4b43-88f9-f553bff4e6eb",
+              "leftValue": "={{ $json['Approval status'] }}",
+              "rightValue": "Approved",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        280,
+        -580
+      ],
+      "id": "84ce0d80-e902-4725-b2f3-cad03882858b",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8",
+          "mode": "list",
+          "cachedResultName": "Hostellers Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Student Id",
+              "lookupValue": "={{ $('get approval request').item.json['Student ID'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        940,
+        -680
+      ],
+      "id": "200506d3-c7d9-416b-8833-0c5ad0a96330",
+      "name": "get student details",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "WHH2kfjowspGwaN5",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8",
+          "mode": "list",
+          "cachedResultName": "Hostellers Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1819228021,
+          "mode": "list",
+          "cachedResultName": "Requests",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit#gid=1819228021"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Student ID",
+              "lookupValue": "={{ $json.body.reg_no }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        60,
+        -580
+      ],
+      "id": "d751c6ec-26b3-4c2e-947a-87d1b253614b",
+      "name": "get approval request",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "WHH2kfjowspGwaN5",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8",
+          "mode": "list",
+          "cachedResultName": "Hostellers Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1819228021,
+          "mode": "list",
+          "cachedResultName": "Requests",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit#gid=1819228021"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Google Sheets').item.json['Student Name'] }}",
+            "Approval status": "Approved",
+            "Student ID": "={{ $('Google Sheets').item.json['Student Id'] }}"
+          },
+          "matchingColumns": [
+            "Student ID"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "From",
+              "displayName": "From",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Reason",
+              "displayName": "Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Approval status",
+              "displayName": "Approval status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Student ID",
+              "displayName": "Student ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3140,
+        -1340
+      ],
+      "id": "02073394-a031-4f1a-a6fd-cd83f84c1f2b",
+      "name": "Update Approved",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "WHH2kfjowspGwaN5",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"allowed\",\n  \"from\": \"2025-04-19\",\n  \"to\": \"2025-04-19\",\n  \"reason\": \"Permission matched with approved dates\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        500,
+        -680
+      ],
+      "id": "651ec43c-f373-4195-b18b-54c30bf75313",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"denied\",\n  \"reason\": \"Approval not found or date mismatch\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        500,
+        -480
+      ],
+      "id": "152ca047-8a8f-4cc9-b510-8bf6ea668222",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "652405314621678",
+        "recipientPhoneNumber": "={{ $('get student details').item.json['Phone Number'].toString() }}",
+        "textBody": "=Hi  {{ $('get student details').item.json['Student Name'] }},you are {{ $('Webhook').item.json.body.scan_type }} at {{ $now }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        -680
+      ],
+      "id": "fe506683-fb70-4ff6-a3aa-50b138f220dd",
+      "name": "in and out notification to student",
+      "webhookId": "5290a2aa-8b42-4c0f-9338-af731b8eb877",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "I6p7Us8QOTve6Y0Q",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "652405314621678",
+        "recipientPhoneNumber": "={{ $('get student details').item.json['Parent Number'].toString() }}",
+        "textBody": "=Hi {{ $('get student details').item.json['Parent Name'] }},\nYour ward {{ $('get student details').item.json['Student Name'] }} is {{ $('Webhook').item.json.body.scan_type }}.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        -680
+      ],
+      "id": "7e0b70f9-8fb9-4fab-80bd-915969a4a330",
+      "name": "in and out notification to parent",
+      "webhookId": "f3e886a0-411f-42d3-9217-1efde67e8f7f",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "I6p7Us8QOTve6Y0Q",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8",
+          "mode": "list",
+          "cachedResultName": "Hostellers Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1031458753,
+          "mode": "list",
+          "cachedResultName": "in and out log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit#gid=1031458753"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Register No": "={{ $json['Student Id'] }}",
+            "Name": "={{ $json['Student Name'] }}",
+            "In/out": "={{ $('Webhook').item.json.body.scan_type }}",
+            "Time": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Register No",
+              "displayName": "Register No",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "In/out",
+              "displayName": "In/out",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1160,
+        -680
+      ],
+      "id": "c5bd045c-9309-48f2-ab76-1588f88619cc",
+      "name": "in and out log",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "WHH2kfjowspGwaN5",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "652405314621678",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "=Hi  {{ $('Google Sheets').item.json['Student Name'] }},\nYour outing request is approved.Use the following QR code at the gate.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        3800,
+        -1340
+      ],
+      "id": "0fad4cb8-2b72-4241-bfd9-de8eb44918fd",
+      "name": "Send approved message",
+      "webhookId": "91caf23d-1044-4065-a820-1f5ce1900b4a",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "I6p7Us8QOTve6Y0Q",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "phoneNumberId": "652405314621678",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        3580,
+        -1340
+      ],
+      "id": "f0378bd5-6613-4365-96f0-68d011d40379",
+      "name": "upload qr",
+      "webhookId": "9155de42-7a7d-4579-b73e-c38f5603bc0c",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "I6p7Us8QOTve6Y0Q",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "89dbdd04-a4cf-45de-b2d1-d1190f2546b1",
+              "leftValue": "={{ $json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        280,
+        -1040
+      ],
+      "id": "ff0cce19-0bc9-4822-b8ed-0e72eff5b056",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b9448d38-7272-45c7-970b-740aa287ae40",
+              "leftValue": "={{ $json.data.approved }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2040,
+        -1140
+      ],
+      "id": "f2de8e29-de43-4fe8-8460-c7a62bae6c5d",
+      "name": "Check If parent approved"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "phoneNumberId": "652405314621678",
+        "recipientPhoneNumber": "={{ $('Google Sheets').item.json['Warden Number'] .toString()}}",
+        "message": "=Hi Warden,\nPlease look into the following outing request.\nSubmitted by: {{ $('Google Sheets').item.json['Student Name'] }}\nPhone No: {{ $('Google Sheets').item.json['Phone Number'] }}\nFrom: {{ $('Outing details collection').item.json.data.From }}\nTo: {{ $('Outing details collection').item.json.data['Reason for outing'] }}\nReason: {{ $('Outing details collection').item.json.data['Reason for outing'] }}",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        2700,
+        -1240
+      ],
+      "id": "adbc9719-6654-4e5d-af39-1f595a14d3bc",
+      "name": "warden message",
+      "webhookId": "fdc838ec-63bc-45db-824b-a9463140aad8",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "I6p7Us8QOTve6Y0Q",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "80a41987-ac7a-4389-b882-8297a51c429b",
+              "leftValue": "={{ $('warden message').item.json.data.approved }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2920,
+        -1240
+      ],
+      "id": "5b50d8b7-9d0c-49fe-8f59-045ebcba9af7",
+      "name": "Check If Warden Approved"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "652405314621678",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from}}",
+        "textBody": "=Hi {{ $('Google Sheets').item.json['Student Name'] }},\nYour Outing Request has been disapproved by your Parent.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        2480,
+        -1040
+      ],
+      "id": "3f908b37-e878-47bc-bc0c-90f02921be13",
+      "name": "WhatsApp Business Cloud",
+      "webhookId": "528ec000-d1a4-4926-a056-2d4ecf72ded7",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "I6p7Us8QOTve6Y0Q",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "652405314621678",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "=Hi {{ $('Google Sheets').item.json['Student Name'] }},\nYour Outing Request has been approved by your Parent.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        2480,
+        -1240
+      ],
+      "id": "25d1eb08-06a1-42b9-8c66-5e839fde5af7",
+      "name": "Send Parent Approved Notification To Student",
+      "webhookId": "2ed5e94d-679a-4eb2-a804-64d03ff18a24",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "I6p7Us8QOTve6Y0Q",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "652405314621678",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "=Hi {{ $('Google Sheets').item.json['Student Name'] }},\nYour outing request has been rejectd by your hostel warden.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        3360,
+        -1140
+      ],
+      "id": "738c83c4-74e6-4cf3-bc52-2e18e0d63a25",
+      "name": "WhatsApp Business Cloud2",
+      "webhookId": "8ee24972-de99-4a80-bb80-6b6047dc9b01",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "I6p7Us8QOTve6Y0Q",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "652405314621678",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "=Hi {{ $('WhatsApp Trigger').item.json.contacts[0].profile.name }}, I can't find your number in the students database.\nPlease reach out to your hostel warden for further assistance.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        500,
+        -940
+      ],
+      "id": "69795fef-67c9-4b10-b106-97895a466395",
+      "name": "Cant find your number",
+      "webhookId": "4c39db90-7789-4990-a7cb-8ec99b38da54",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "I6p7Us8QOTve6Y0Q",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8",
+          "mode": "list",
+          "cachedResultName": "Hostellers Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1819228021,
+          "mode": "list",
+          "cachedResultName": "Requests",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit#gid=1819228021"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Student ID": "={{ $('Google Sheets').item.json['Student Id'] }}",
+            "Approval status": "Rejected"
+          },
+          "matchingColumns": [
+            "Student ID"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "From",
+              "displayName": "From",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Reason",
+              "displayName": "Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Approval status",
+              "displayName": "Approval status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Student ID",
+              "displayName": "Student ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3140,
+        -1140
+      ],
+      "id": "bae61210-face-49f6-b142-53582872bbad",
+      "name": "Update Rejected",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "WHH2kfjowspGwaN5",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8",
+          "mode": "list",
+          "cachedResultName": "Hostellers Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1819228021,
+          "mode": "list",
+          "cachedResultName": "Requests",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit#gid=1819228021"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Student ID": "={{ $('Google Sheets').item.json['Student Id'] }}",
+            "Approval status": "Parent Rejected"
+          },
+          "matchingColumns": [
+            "Student ID"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "From",
+              "displayName": "From",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Reason",
+              "displayName": "Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Approval status",
+              "displayName": "Approval status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Student ID",
+              "displayName": "Student ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2260,
+        -1040
+      ],
+      "id": "125bc4fe-06fc-4190-8138-fb5ebf80d691",
+      "name": "Update Parent Rejected",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "WHH2kfjowspGwaN5",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8",
+          "mode": "list",
+          "cachedResultName": "Hostellers Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Student Id": "={{ $('If3').item.json['Student ID'] }}",
+            "Current Status": "={{ $('Webhook').item.json.body.scan_type }}"
+          },
+          "matchingColumns": [
+            "Student Id"
+          ],
+          "schema": [
+            {
+              "id": "Student Name",
+              "displayName": "Student Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Parent Name",
+              "displayName": "Parent Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Parent Number",
+              "displayName": "Parent Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Hostel Name",
+              "displayName": "Hostel Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Warden Number",
+              "displayName": "Warden Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Current Status",
+              "displayName": "Current Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Student Id",
+              "displayName": "Student Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        720,
+        -680
+      ],
+      "id": "a77611f3-840e-4e08-903f-26beca4bd158",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "WHH2kfjowspGwaN5",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "WhatsApp Trigger": [
+      {
+        "json": {
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "15556396275",
+            "phone_number_id": "652405314621678"
+          },
+          "contacts": [
+            {
+              "profile": {
+                "name": "Haswanth Kumar Kurevella"
+              },
+              "wa_id": "918919481293"
+            }
+          ],
+          "messages": [
+            {
+              "from": "918919481293",
+              "id": "wamid.HBgMOTE4OTE5NDgxMjkzFQIAEhggRUYxNUMwNDlBNjAzQzc3NDE4RkM0OTI2NDRCQUZEN0UA",
+              "timestamp": "1745030061",
+              "text": {
+                "body": "Hello"
+              },
+              "type": "text"
+            }
+          ],
+          "field": "messages"
+        }
+      }
+    ],
+    "Outing Booking selection": [
+      {
+        "json": {
+          "data": {
+            "approved": true
+          }
+        }
+      }
+    ],
+    "Outing details collection": [
+      {
+        "json": {
+          "data": {
+            "From": "2025-04-20",
+            "to": "2025-04-20",
+            "Reason for outing": "Hi"
+          }
+        }
+      }
+    ],
+    "Outing details confirmation": [
+      {
+        "json": {
+          "data": {
+            "approved": true
+          }
+        }
+      }
+    ],
+    "parent approval": [
+      {
+        "json": {
+          "data": {
+            "approved": true
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Outing details collection",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Outing details confirmation": {
+      "main": [
+        [
+          {
+            "node": "Outing details are confirmed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outing details collection": {
+      "main": [
+        [
+          {
+            "node": "Outing details confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outing Booking selection": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outing details are confirmed": {
+      "main": [
+        [
+          {
+            "node": "add approval request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Outing details collection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parent approval": {
+      "main": [
+        [
+          {
+            "node": "Check If parent approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "add approval request": {
+      "main": [
+        [
+          {
+            "node": "parent approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Approval Request": {
+      "main": [
+        [
+          {
+            "node": "Send Parent Approved Notification To Student",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "upload qr",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "get approval request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get student details": {
+      "main": [
+        [
+          {
+            "node": "in and out log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get approval request": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Approved": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "in and out notification to student": {
+      "main": [
+        [
+          {
+            "node": "in and out notification to parent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "in and out log": {
+      "main": [
+        [
+          {
+            "node": "in and out notification to student",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send approved message": {
+      "main": [
+        [
+          {
+            "node": "Send Qr",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "upload qr": {
+      "main": [
+        [
+          {
+            "node": "Send approved message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Outing Booking selection",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cant find your number",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check If parent approved": {
+      "main": [
+        [
+          {
+            "node": "Update Approval Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Parent Rejected",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "warden message": {
+      "main": [
+        [
+          {
+            "node": "Check If Warden Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check If Warden Approved": {
+      "main": [
+        [
+          {
+            "node": "Update Approved",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Rejected",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Parent Approved Notification To Student": {
+      "main": [
+        [
+          {
+            "node": "warden message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Rejected": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Parent Rejected": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "get student details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "849d2c9d-8938-4126-b9cf-8c4fcdca0c3a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "36a3f326d9249b9cef6f4661c87256810ce8e7e0f217a7a14a889d608d17afcb"
+  },
+  "id": "mqjuKz4HDlqfCQlU",
+  "tags": []
+}
