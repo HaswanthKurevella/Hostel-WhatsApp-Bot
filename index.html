@@ -41,7 +41,7 @@
     function sendToN8n(reg_no) {
       document.getElementById("status").innerText = "⌛ Checking permission...";
       
-      fetch("https://haswanth.app.n8n.cloud/webhook-test/2668bacf-2a9e-4577-9525-71be2184f15d", {
+      fetch("https://haswanth.app.n8n.cloud/webhook/2668bacf-2a9e-4577-9525-71be2184f15d", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
