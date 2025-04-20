@@ -115,4 +115,4 @@ This project automates the student outing request process in a college environme
 ---
 
 > Project maintained by: **Haswanth Kumar Kurevella**
-> For any issues or help, contact: `haswanthkurevella@gmail.com`
+> For any issues or help, contact: `haswanthkurevella1@gmail.com`
