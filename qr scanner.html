@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QR Scanner to n8n</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; }
+    #reader { width: 300px; margin: 20px auto; }
+    .btn { padding: 10px 20px; margin: 5px; font-size: 16px; cursor: pointer; }
+    .selected { background-color: #4CAF50; color: white; }
+    .status { margin-top: 20px; font-size: 18px; }
+    .scanned { font-weight: bold; color: #333; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h2>📷 Student QR Gate Scanner</h2>
+
+  <div>
+    <button class="btn selected" id="btn-in" onclick="selectScanType('IN')">IN</button>
+    <button class="btn" id="btn-out" onclick="selectScanType('OUT')">OUT</button>
+  </div>
+
+  <div id="reader"></div>
+  
+  <div class="status" id="status">Select IN or OUT and scan the QR</div>
+  <div class="scanned" id="scannedText"></div>
+
+  <script>
+    let scanType = "IN";
+    let scannedRecently = false;
+    let html5QrCode;
+
+    function selectScanType(type) {
+      scanType = type;
+      document.getElementById("btn-in").classList.remove("selected");
+      document.getElementById("btn-out").classList.remove("selected");
+      document.getElementById("btn-" + type.toLowerCase()).classList.add("selected");
+      document.getElementById("status").innerText = `Ready to scan for ${scanType}`;
+    }
+
+    function sendToN8n(reg_no) {
+      document.getElementById("status").innerText = "⌛ Checking permission...";
+      
+      fetch("https://haswanth.app.n8n.cloud/webhook-test/2668bacf-2a9e-4577-9525-71be2184f15d", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reg_no: reg_no,
+          scan_type: scanType
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "allowed") {
+          document.getElementById("status").innerText = `✅ Access Granted (${scanType})\nFrom: ${data.from} To: ${data.to}`;
+        } else {
+          document.getElementById("status").innerText = `❌ Access Denied\nReason: ${data.reason || "Not allowed"}`;
+        }
+
+        // Stop camera after result
+        html5QrCode.stop().then(() => {
+          console.log("Camera stopped successfully.");
+        }).catch(err => {
+          console.error("Failed to stop camera:", err);
+        });
+
+        scannedRecently = false;
+      })
+      .catch(err => {
+        document.getElementById("status").innerText = "❌ Error connecting to n8n server.";
+        scannedRecently = false;
+      });
+    }
+
+    function onScanSuccess(decodedText) {
+      if (scannedRecently) return;
+      scannedRecently = true;
+
+      document.getElementById("scannedText").innerText = `Scanned Register No: ${decodedText}`;
+      sendToN8n(decodedText);
+    }
+
+    window.onload = function() {
+      html5QrCode = new Html5Qrcode("reader");
+      html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess);
+    };
+  </script>
+</body>
+</html>
