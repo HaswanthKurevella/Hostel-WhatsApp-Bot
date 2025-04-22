@@ -26,49 +26,6 @@
     },
     {
       "parameters": {
-        "documentId": {
-          "__rl": true,
-          "value": "11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8",
-          "mode": "list",
-          "cachedResultName": "Hostellers Data",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit?usp=drivesdk"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "gid=0",
-          "mode": "list",
-          "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit#gid=0"
-        },
-        "filtersUI": {
-          "values": [
-            {
-              "lookupColumn": "Phone Number",
-              "lookupValue": "={{ $json.messages[0].from }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        60,
-        -1040
-      ],
-      "id": "82f6c8c1-18b2-4456-b4b1-bc5f19aa40d5",
-      "name": "Google Sheets",
-      "alwaysOutputData": true,
-      "notesInFlow": false,
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "WHH2kfjowspGwaN5",
-          "name": "Google Sheets account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -106,7 +63,7 @@
         "operation": "sendAndWait",
         "phoneNumberId": "652405314621678",
         "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
-        "message": "=Here are your outing details:\nFrom :{{ $json.data.From }}\nTo: {{ $json.data.to }}\nReason: {{ $json.data['Reason for outing'] }}\n\nParent Name:{{ $('Google Sheets').item.json['Parent Name'] }}\nParent mobile number:{{ $('Google Sheets').item.json['Parent Number'] }}\nHostel Name:{{ $('Google Sheets').item.json['Hostel Name'] }}\nWarden mobile number:{{ $('Google Sheets').item.json['Warden Number'] }}\n\nif you approve the details from the below the outing request will be submitted for the approval from both parents and the warden.\nThanks\nHostel Bot",
+        "message": "=Here are your outing details:\nFrom :{{ $json.data.From }}\nTo: {{ $json.data.to }}\nReason: {{ $json.data['Reason for outing'] }}\n\nParent Name:{{ $('Get Data').item.json['Parent Name'] }}\nParent mobile number:{{ $('Get Data').item.json['Parent Number'] }}\nHostel Name:{{ $('Get Data').item.json['Hostel Name'] }}\nWarden mobile number:{{ $('Get Data').item.json['Warden Number'] }}\n\nif you approve the details from the below the outing request will be submitted for the approval from both parents and the warden.\nThanks\nHostel Bot",
         "approvalOptions": {
           "values": {
             "approvalType": "double"
@@ -135,7 +92,7 @@
         "operation": "sendAndWait",
         "phoneNumberId": "652405314621678",
         "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
-        "message": "=Hi  {{ $('Google Sheets').item.json['Student Name'] }},\nfill the form below to proceed the request of outing.\n",
+        "message": "=Hi  {{ $('Get Data').item.json['Student Name'] }},\nfill the form below to proceed the request of outing.\n",
         "responseType": "customForm",
         "formFields": {
           "values": [
@@ -160,7 +117,7 @@
       "type": "n8n-nodes-base.whatsApp",
       "typeVersion": 1,
       "position": [
-        980,
+        940,
         -1140
       ],
       "id": "dc4bb7ac-9b26-45b5-aea3-0d7c86a8d507",
@@ -240,8 +197,8 @@
       "parameters": {
         "operation": "sendAndWait",
         "phoneNumberId": "652405314621678",
-        "recipientPhoneNumber": "={{ $('Google Sheets').item.json['Parent Number'].toString() }}",
-        "message": "=hi  {{ $('Google Sheets').item.json['Parent Name'] }},\nwe are messaging to get approval for the outing request sent by your ward {{ $('Google Sheets').item.json['Student Name'] }}  residing at {{ $('Google Sheets').item.json['Hostel Name'] }}\nOuting From: {{ $('Outing details collection').item.json.data.From }}\nOuting upto: {{ $('Outing details collection').item.json.data.to }}\nReason:\nPlease click on the respective link below to proceed.",
+        "recipientPhoneNumber": "={{ $('Get Data').item.json['Parent Number'].toString() }}",
+        "message": "=hi  {{ $('Get Data').item.json['Parent Name'] }},\nwe are messaging to get approval for the outing request sent by your ward {{ $('Get Data').item.json['Student Name'] }}  residing at {{ $('Get Data').item.json['Hostel Name'] }}\nOuting From: {{ $('Outing details collection').item.json.data.From }}\nOuting upto: {{ $('Outing details collection').item.json.data.to }}\nReason:{{ $json.Reason }}\nPlease click on the respective link below to proceed.",
         "approvalOptions": {
           "values": {
             "approvalType": "double"
@@ -285,12 +242,12 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "Name": "={{ $('Google Sheets').item.json['Student Name'] }}",
+            "Name": "={{ $('Get Data').item.json['Student Name'] }}",
             "From": "={{ $('Outing details collection').item.json.data.From }}",
             "To": "={{ $('Outing details collection').item.json.data.to }}",
             "Reason": "={{ $('Outing details collection').item.json.data['Reason for outing'] }}",
-            "Approval status": "Submitted for approval",
-            "Student ID": "={{ $('Google Sheets').item.json['Student Id'] }}"
+            "Approval status": "Submitted",
+            "Student ID": "={{ $('Get Data').item.json['Student Id'] }}"
           },
           "matchingColumns": [
             "Student ID"
@@ -397,9 +354,9 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "Name": "={{ $('Google Sheets').item.json['Student Name'] }}",
+            "Name": "={{ $('Get Data').item.json['Student Name'] }}",
             "Approval status": "Parent Approved",
-            "Student ID": "={{ $('Google Sheets').item.json['Student Id'] }}"
+            "Student ID": "={{ $('Get Data').item.json['Student Id'] }}"
           },
           "matchingColumns": [
             "Student ID"
@@ -513,8 +470,8 @@
       "type": "n8n-nodes-base.whatsApp",
       "typeVersion": 1,
       "position": [
-        4020,
-        -1340
+        3580,
+        -820
       ],
       "id": "f71ba4b0-ae86-44d5-83f1-881eee277d8e",
       "name": "Send Qr",
@@ -697,9 +654,9 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "Name": "={{ $('Google Sheets').item.json['Student Name'] }}",
+            "Name": "={{ $('Get Data').item.json['Student Name'] }}",
             "Approval status": "Approved",
-            "Student ID": "={{ $('Google Sheets').item.json['Student Id'] }}"
+            "Student ID": "={{ $('Get Data').item.json['Student Id'] }}"
           },
           "matchingColumns": [
             "Student ID"
@@ -953,14 +910,14 @@
         "operation": "send",
         "phoneNumberId": "652405314621678",
         "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
-        "textBody": "=Hi  {{ $('Google Sheets').item.json['Student Name'] }},\nYour outing request is approved.Use the following QR code at the gate.",
+        "textBody": "=Hi  {{ $('Get Data').item.json['Student Name'] }},\nYour outing request is approved.Use the following QR code at the gate.",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.whatsApp",
       "typeVersion": 1,
       "position": [
-        3800,
-        -1340
+        3660,
+        -1100
       ],
       "id": "0fad4cb8-2b72-4241-bfd9-de8eb44918fd",
       "name": "Send approved message",
@@ -1066,8 +1023,8 @@
       "parameters": {
         "operation": "sendAndWait",
         "phoneNumberId": "652405314621678",
-        "recipientPhoneNumber": "={{ $('Google Sheets').item.json['Warden Number'] .toString()}}",
-        "message": "=Hi Warden,\nPlease look into the following outing request.\nSubmitted by: {{ $('Google Sheets').item.json['Student Name'] }}\nPhone No: {{ $('Google Sheets').item.json['Phone Number'] }}\nFrom: {{ $('Outing details collection').item.json.data.From }}\nTo: {{ $('Outing details collection').item.json.data['Reason for outing'] }}\nReason: {{ $('Outing details collection').item.json.data['Reason for outing'] }}",
+        "recipientPhoneNumber": "={{ $('Get Data').item.json['Warden Number'] .toString()}}",
+        "message": "=Hi Warden,\nPlease look into the following outing request.\nSubmitted by: {{ $('Get Data').item.json['Student Name'] }}\nPhone No: {{ $('Get Data').item.json['Phone Number'] }}\nFrom: {{ $('Outing details collection').item.json.data.From }}\nTo: {{ $('add approval request').item.json.To }}\nReason: {{ $('Outing details collection').item.json.data['Reason for outing'] }}",
         "approvalOptions": {
           "values": {
             "approvalType": "double"
@@ -1130,7 +1087,7 @@
         "operation": "send",
         "phoneNumberId": "652405314621678",
         "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from}}",
-        "textBody": "=Hi {{ $('Google Sheets').item.json['Student Name'] }},\nYour Outing Request has been disapproved by your Parent.",
+        "textBody": "=Hi {{ $('Get Data').item.json['Student Name'] }},\nYour Outing Request has been disapproved by your Parent.",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.whatsApp",
@@ -1154,7 +1111,7 @@
         "operation": "send",
         "phoneNumberId": "652405314621678",
         "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
-        "textBody": "=Hi {{ $('Google Sheets').item.json['Student Name'] }},\nYour Outing Request has been approved by your Parent.",
+        "textBody": "=Hi {{ $('Get Data').item.json['Student Name'] }},\nYour Outing Request has been approved by your Parent.",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.whatsApp",
@@ -1178,7 +1135,7 @@
         "operation": "send",
         "phoneNumberId": "652405314621678",
         "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
-        "textBody": "=Hi {{ $('Google Sheets').item.json['Student Name'] }},\nYour outing request has been rejectd by your hostel warden.",
+        "textBody": "=Hi {{ $('Get Data').item.json['Student Name'] }},\nYour outing request has been rejectd by your hostel warden.",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.whatsApp",
@@ -1241,7 +1198,7 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "Student ID": "={{ $('Google Sheets').item.json['Student Id'] }}",
+            "Student ID": "={{ $('Get Data').item.json['Student Id'] }}",
             "Approval status": "Rejected"
           },
           "matchingColumns": [
@@ -1359,7 +1316,7 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "Student ID": "={{ $('Google Sheets').item.json['Student Id'] }}",
+            "Student ID": "={{ $('Get Data').item.json['Student Id'] }}",
             "Approval status": "Parent Rejected"
           },
           "matchingColumns": [
@@ -1594,6 +1551,49 @@
           "name": "Google Sheets account"
         }
       }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8",
+          "mode": "list",
+          "cachedResultName": "Hostellers Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Phone Number",
+              "lookupValue": "={{ $json.messages[0].from }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        60,
+        -1040
+      ],
+      "id": "82f6c8c1-18b2-4456-b4b1-bc5f19aa40d5",
+      "name": "Get Data",
+      "alwaysOutputData": true,
+      "notesInFlow": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "WHH2kfjowspGwaN5",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
   "pinData": {
@@ -1616,53 +1616,15 @@
           "messages": [
             {
               "from": "918919481293",
-              "id": "wamid.HBgMOTE4OTE5NDgxMjkzFQIAEhggRUYxNUMwNDlBNjAzQzc3NDE4RkM0OTI2NDRCQUZEN0UA",
-              "timestamp": "1745030061",
+              "id": "wamid.HBgMOTE4OTE5NDgxMjkzFQIAEhggNjM1NzU1QzQyM0E4NkJBMThCQTI2QkYwN0I4NDgyMDEA",
+              "timestamp": "1745132691",
               "text": {
-                "body": "Hello"
+                "body": "Hi"
               },
               "type": "text"
             }
           ],
           "field": "messages"
-        }
-      }
-    ],
-    "Outing Booking selection": [
-      {
-        "json": {
-          "data": {
-            "approved": true
-          }
-        }
-      }
-    ],
-    "Outing details collection": [
-      {
-        "json": {
-          "data": {
-            "From": "2025-04-20",
-            "to": "2025-04-20",
-            "Reason for outing": "Hi"
-          }
-        }
-      }
-    ],
-    "Outing details confirmation": [
-      {
-        "json": {
-          "data": {
-            "approved": true
-          }
-        }
-      }
-    ],
-    "parent approval": [
-      {
-        "json": {
-          "data": {
-            "approved": true
-          }
         }
       }
     ]
@@ -1672,18 +1634,7 @@
       "main": [
         [
           {
-            "node": "Google Sheets",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Google Sheets": {
-      "main": [
-        [
-          {
-            "node": "If4",
+            "node": "Get Data",
             "type": "main",
             "index": 0
           }
@@ -2022,13 +1973,24 @@
           }
         ]
       ]
+    },
+    "Get Data": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "849d2c9d-8938-4126-b9cf-8c4fcdca0c3a",
+  "versionId": "fb48ba63-919d-43e9-b20b-c12664edb222",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "36a3f326d9249b9cef6f4661c87256810ce8e7e0f217a7a14a889d608d17afcb"
