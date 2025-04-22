@@ -86,13 +86,15 @@ To build a seamless, secure, and automated system that allows students to reques
 ## 📷 System Implementation Screenshots
 
 > 🖼️ **Student WhatsApp Chat with Bot**  
-<img title="a title" alt="Alt text" src="Screenshots\Student Chat.jpg">
+<img title="a title" alt="Alt text" src="Screenshots\Student Chat.jpg">  
 
 > 🖼️ **Approval Flow in n8n**  
 > <img title="a title" alt="Alt text" src="Screenshots\n8n workflow-1.jpg">
-[View PDF](./n8n%20workflow.pdf)
+[View PDF](./n8n%20workflow.pdf)  
+
 > 🖼️ **Outing Request Form**
-> <img title="a title" alt="Alt text" src="Screenshots\Outing request form.jpg">
+> <img title="a title" alt="Alt text" src="Screenshots\Outing request form.jpg">  
+
 > 🖼️ **Spreadsheet**  
   > [View Spread sheet](https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit?usp=sharing)  
 > **Student Database Sheet**  
@@ -102,13 +104,13 @@ To build a seamless, secure, and automated system that allows students to reques
 > **in and out logs**  
 ><img title="a title" alt="Alt text" src="Screenshots\Excel sheet in and out logs.png">  
 
-> 🖼️ **Screenshot 4: Parent whatsapp chat window**  
+> 🖼️ **Parent whatsapp chat window**  
 > <img title="a title" alt="Alt text" src="Screenshots\Parent chat screenshot.png">
 
-> 🖼️ **Screenshot 5: Warden whatsapp chat window**  
+> 🖼️ **Warden whatsapp chat window**  
 > <img title="a title" alt="Alt text" src="Screenshots\warden chat.jpg">  
 
-> 🖼️ **Screenshot 6: Gate Scanner Interface**  
+> 🖼️ **Gate Scanner Interface**  
 > <img title="a title" alt="Alt text" src="Screenshots\Scanner Interface.png">
 
 ## ⚠️ Error Handling
