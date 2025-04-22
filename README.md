@@ -93,7 +93,7 @@ To build a seamless, secure, and automated system that allows students to reques
 [View PDF](./n8n%20workflow.pdf)  
 
 > 🖼️ **Outing Request Form**
-> <img title="a title" alt="Alt text" src="Screenshots\Outing request form.jpg">  
+> <img title="a title" alt="Alt text" src="Screenshots\OutingRequestForm.jpg">  
 
 > 🖼️ **Spreadsheet**  
   > [View Spread sheet](https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit?usp=sharing)  
