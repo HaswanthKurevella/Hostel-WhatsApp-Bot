@@ -93,13 +93,13 @@ To build a seamless, secure, and automated system that allows students to reques
 [View PDF](./n8n%20workflow.pdf)
 
 > 🖼️ **Outing Request Form**  
-> [View Spread sheet](https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit?usp=sharing)  
-> **Student Database Sheet**
-> <img title="a title" alt="Alt text" src="Screenshots\Excel sheet db.png">
->**Outing Requests Sheet**
-> <img title="a title" alt="Alt text" src="Screenshots\Excel sheet approval requests.png">
->**in and out logs**
-><img title="a title" alt="Alt text" src="Screenshots\Excel sheet in and out logs.png">
+  >> [View Spread sheet](https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit?usp=sharing)  
+> **Student Database Sheet**  
+> <img title="a title" alt="Alt text" src="Screenshots\Excel sheet db.png">  
+> **Outing Requests Sheet**  
+> <img title="a title" alt="Alt text" src="Screenshots\Excel sheet approval requests.png">  
+> **in and out logs**  
+><img title="a title" alt="Alt text" src="Screenshots\Excel sheet in and out logs.png">  
 
 > 🖼️ **Screenshot 4: Parent whatsapp chat window**  
 > <img title="a title" alt="Alt text" src="Screenshots\Parent chat screenshot.png">
