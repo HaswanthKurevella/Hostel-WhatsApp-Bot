@@ -1,110 +1,131 @@
-# Hostel Outing Request Bot (n8n + WhatsApp)
 
-## 📌 Overview
-This project automates the student outing request process in a college environment using WhatsApp chatbot, Google Sheets as a database, and QR code-based entry/exit tracking. It facilitates seamless communication and approval flow between students, parents, and wardens.
+# Hostel Outing Request Automation using WhatsApp Chatbot & n8n
 
----
+## 📘 Project Overview
 
-## 🛠️ Tech Stack
-- **n8n** – Workflow automation platform
-- **WhatsApp Cloud API** – Messaging interface
-- **Google Sheets** – Data storage
-- **QR Server API** – QR code generation
-- **Webhook** – For gate in/out scan logging
+This project automates the student outing request process in a college hostel environment using WhatsApp, n8n workflows, Google Sheets, and QR code verification. It is designed to streamline the process of raising, approving, and tracking student outings while ensuring safety, transparency, and operational efficiency.
 
----
+## 🎯 Objective
+
+To build a seamless, secure, and automated system that allows students to request outing permissions and ensures timely approvals from parents and wardens, while providing an easy mechanism for gate verification using QR codes.
+
+## 🧰 Tech Stack
+
+- **n8n** (Workflow automation platform)
+- **WhatsApp Cloud API** (for messaging and approvals)
+- **Google Sheets API** (for data storage and logging)
+- **QRServer API** (for generating QR codes)
+- **Webhook** (for gate scan logging)
 
 ## 📁 Google Sheets Structure
 
-### Sheet1 (Student Database)
-| Column Name        | Description                  |
-|--------------------|------------------------------|
-| Student Name       | Full name of the student     |
-| Phone Number       | Student's WhatsApp number    |
-| Parent Name        | Parent's name                |
-| Parent Number      | Parent's WhatsApp number     |
-| Hostel Name        | Hostel student resides in    |
-| Warden Number      | Warden's WhatsApp number     |
-| Student ID         | Unique ID (Register number)  |
-| Current Status     | In/Out                       |
+### 1. **Student Database Sheet**
 
-### Requests
-| Column Name       | Description                    |
-|-------------------|--------------------------------|
-| Name              | Student name                   |
-| From              | Outing start date              |
-| To                | Outing end date                |
-| Reason            | Reason for outing              |
-| Approval status   | Submitted / Approved / Rejected|
-| Student ID        | Unique identifier              |
+| Column             | Description                         |
+|--------------------|-------------------------------------|
+| Student Name       | Full name of the student            |
+| Phone Number       | Student's WhatsApp number           |
+| Parent Name        | Parent’s name                       |
+| Parent Number      | Parent's WhatsApp number            |
+| Hostel Name        | Hostel name                         |
+| Warden Number      | Warden's WhatsApp number            |
+| Student ID         | Unique student ID (Register No.)    |
+| Current Status     | In/Out                              |
 
-### In and Out Log
-| Column Name       | Description            |
-|-------------------|------------------------|
-| Register No       | Student ID             |
-| Name              | Student name           |
-| In/out            | In or Out              |
-| Time              | Timestamp of the event |
+### 2. **Outing Requests Sheet**
 
----
+| Column             | Description                         |
+|--------------------|-------------------------------------|
+| Name               | Student name                        |
+| From               | Outing start date                   |
+| To                 | Outing end date                     |
+| Reason             | Reason for outing                   |
+| Approval Status    | Pending/Approved/Rejected           |
+| Student ID         | Unique identifier                   |
 
-## 🔄 Workflow Logic
+### 3. **In and Out Logs Sheet**
 
-### 1. WhatsApp Trigger
-- Initiated when a student sends a message to the bot.
-- Student verified against phone number in Sheet1.
+| Column             | Description                         |
+|--------------------|-------------------------------------|
+| Register No        | Student ID                          |
+| Name               | Student name                        |
+| In/Out             | Entry or Exit                       |
+| Time               | Timestamp of the scan               |
 
-### 2. Booking & Form Collection
-- Bot sends a form to collect: `From`, `To`, `Reason for outing`.
+## 🔄 Workflow Breakdown
 
-### 3. Confirmation
-- Details shown back to student for approval.
-- If confirmed, moves to approval phase.
+### 1. **Student Sends Message**
 
-### 4. Approval Workflow
-- Request logged in **Requests** sheet.
-- Approval requested from **Parent** → If approved → proceed to **Warden**.
-- If both approve, status marked `Approved`.
+- Trigger: WhatsApp Cloud API.
+- Bot identifies student using phone number linked in Google Sheet.
 
-### 5. QR Code Generation
-- QR code generated using QRServer API with Student ID as data.
-- QR code uploaded and sent to student on WhatsApp.
+### 2. **Bot Collects Request Info**
 
-### 6. Gate Logging (Webhook)
-- Webhook receives scan request from gate.
-- Validates QR + date range + approval.
-- Logs data in **In and Out Log**.
-- Sends WhatsApp notifications to student and parent.
+- Gathers: Outing dates (From/To), Reason.
+- Confirms details with the student.
 
----
+### 3. **Approval Sequence**
 
-## 🧪 Testing and Demo
-- Use sample numbers and entries in Sheets.
-- Run through all paths: approved, parent rejected, warden rejected.
-- Use Postman or curl to simulate webhook calls.
+- Parent receives WhatsApp message → taps to approve or deny.
+- If approved, Warden receives the same request.
+- If both approve, status updated to `Approved`.
 
----
+### 4. **QR Code Generation**
 
-## 🔒 Authentication
-- WhatsApp API token configured via credentials in n8n.
-- Google Sheets linked via OAuth2.
+- QR Code generated using QRServer API.
+- QR data contains student ID + outing date.
+- Bot sends QR as a permission card.
 
----
+### 5. **QR Code Scan at Gate**
 
-## 📈 Future Enhancements
-- OTP-based verification for security
-- Email fallback system
-- Admin dashboard with filters
-- Weekly activity reports to hostel heads
+- Webhook receives scan → checks QR validity.
+- Matches with approved requests in sheet.
+- Logs the event (In/Out) in the system.
+- Sends notification to student and parent.
 
----
+## 📷 System Implementation Screenshots
 
-## 👨‍💻 Developer Notes
-- Keep sheet columns fixed as mapped in n8n.
-- Use pinned test data in n8n for simulations.
-- All data mapping is dynamic using expressions.
+> 🖼️ **Student WhatsApp Chat with Bot**  
+<img title="a title" alt="Alt text" src="Screenshots\Student Chat.jpg">
 
----
+> 🖼️ **Approval Flow in n8n**  
+> <img title="a title" alt="Alt text" src="Screenshots\n8n workflow-1.jpg">
+[View PDF](./n8n%20workflow.pdf)
+
+> 🖼️ **Outing Request Form**
+>
+> **Student Database Sheet**
+> <img title="a title" alt="Alt text" src="Screenshots\Excel sheet db.png">
+>**Outing Requests Sheet**
+> <img title="a title" alt="Alt text" src="Screenshots\Excel sheet approval requests.png">
+>**in and out logs**
+><img title="a title" alt="Alt text" src="Screenshots\Excel sheet in and out logs.png">
+
+> 🖼️ **Screenshot 4: Parent whatsapp chat window**  
+> <img title="a title" alt="Alt text" src="Screenshots\Parent chat screenshot.png">
+
+> 🖼️ **Screenshot 5: Warden whatsapp chat window**  
+> <img title="a title" alt="Alt text" src="Screenshots\warden chat.jpg">  
+
+> 🖼️ **Screenshot 6: Gate Scanner Interface**  
+> <img title="a title" alt="Alt text" src="Screenshots\Scanner Interface.png">
+
+## ⚠️ Error Handling
+
+- **Invalid Phone Numbers**: Bot responds with “You're not registered. Please contact the warden.”
+- **Timeout from Parents or Wardens**: Auto-reject request after 24 hours or configurable timeout.
+- **Unmatched QR Codes at Gate**: Show message “Invalid or expired QR code.”
+- **Duplicate Requests**: Prevent new request if one is already `Pending` or `Approved`.
+- **Approval Rejection**: If either Parent or Warden rejects, notify student and stop the flow.
+
+## 🧪 Edge Cases to Consider
+
+- Student sending incomplete details.
+- Request raised with overlapping date range.
+- Parent or Warden unavailable (alternate contact mechanism).
+- Multiple outing requests submitted before approval.
+- QR code reused or forged (use token-based expiry).
+- Internet issues causing delayed webhook triggers.  
 
 ## 🔗 External Services Used
 - [QR Server API](https://goqr.me/api/)
@@ -112,7 +133,23 @@ This project automates the student outing request process in a college environme
 - [Google Sheets](https://sheets.google.com)
 - [WhatsApp Cloud API](https://developers.facebook.com/docs/whatsapp/cloud-api)
 
----
+## 📝 Developer Notes
 
-> Project maintained by: **Haswanth Kumar Kurevella**
-> For any issues or help, contact: `haswanthkurevella1@gmail.com`
+- Maintain data` integrity by always updating sheets through n8n.
+- Use expression-based mapping in n8n to avoid hardcoding.
+- Add retry mechanism for failed WhatsApp API calls.
+- Use webhook testing tools like Postman for local testing.
+
+## 📈 Future Enhancements
+
+- Email-based backup notification system.
+- Admin dashboard using Google Data Studio or Firebase.
+- OTP-based parent/warden verification.
+- Daily and weekly reports to admin.
+- Integration with RFID systems at gate.
+
+## 👨‍💻 Maintainer
+
+**Haswanth Kumar Kurevella**  
+Email: <haswanthkurevella1@gmail.com>   
+Domain: Workflow Automation | Chatbots | Campus Tech
