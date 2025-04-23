@@ -1,4 +1,3 @@
-
 # Hostel Outing Request Automation using WhatsApp Chatbot & n8n
 
 ## 📘 Project Overview
@@ -86,21 +85,21 @@ To build a seamless, secure, and automated system that allows students to reques
 ## 📷 System Implementation Screenshots
 
 > 🖼️ **Student WhatsApp Chat with Bot**  
-<img title="a title" alt="Alt text" src="Screenshots\Student Chat.jpg">  
+<img title="Student WhatsApp Chat" alt="Student WhatsApp Chat with Bot" src="Screenshots\Student Chat.jpg">  
 
 > 🖼️ **Approval Flow in n8n**  
-> <img title="a title" alt="Alt text" src="Screenshots\n8n workflow-1.jpg">
+> <img title="Approval Flow in n8n" alt="n8n Workflow Screenshot" src="Screenshots\n8n workflow-1.jpg">
 [View PDF](./n8n%20workflow.pdf)  
 
 > 🖼️ **Outing Request Form**
-> <img title="a title" alt="Alt text" src="Screenshots\OutingRequestForm.jpg">  
+> <img title="Outing Request Form" alt="Outing Request Form Screenshot" src="Screenshots\OutingRequestForm.jpg">  
 
 > 🖼️ **Spreadsheet**  
   > [View Spread sheet](https://docs.google.com/spreadsheets/d/11OyOqkj_BNrO477fXvTK44QyW5U9TswZksE1vsnwuc8/edit?usp=sharing)  
 > **Student Database Sheet**  
-> <img title="a title" alt="Alt text" src="Screenshots\Excel sheet db.png">  
+> <img title="Student Database Sheet" alt="Google Sheet showing Student Database" src="Screenshots\Excel sheet db.png">  
 > **Outing Requests Sheet**  
-> <img title="a title" alt="Alt text" src="Screenshots\Excel sheet approval requests.png">  
+> <img title="Outing Requests Sheet" alt="Google Sheet showing Outing Requests" src="Screenshots\Excel sheet approval requests.png">  
 > **in and out logs**  
 ><img title="a title" alt="Alt text" src="Screenshots\Excel sheet in and out logs.png">  
 
